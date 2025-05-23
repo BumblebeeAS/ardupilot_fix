@@ -710,6 +710,11 @@ void AP_DDS_Client::update_topic(geographic_msgs_msg_GeoPointStamped& msg)
 bool AP_DDS_Client::update_topic(ardupilot_msgs_msg_Status& msg)
 {
     // Fill the new message.
+    uint8_t FS_RADIO = 21;
+    uint8_t FS_BATTERY = 22;
+    uint8_t FS_GCS = 23;
+    uint8_t FS_EKF = 24;
+
     const auto &vehicle = AP::vehicle();
     const auto &battery = AP::battery();
     msg.vehicle_type = static_cast<uint8_t>(AP::fwversion().vehicle_type);
@@ -1019,6 +1024,10 @@ void AP_DDS_Client::on_request(uxrSession* uxr_session, uxrObjectId object_id, u
         break;
     }
 #endif //AP_DDS_ARM_CHECK_SERVER_ENABLED
+
+#define PARAMETER_NOT_SET 0
+#define PARAMETER_INTEGER 2
+#define PARAMETER_DOUBLE 3
 #if AP_DDS_PARAMETER_SERVER_ENABLED
     case services[to_underlying(ServiceIndex::SET_PARAMETERS)].rep_id: {
         const bool deserialize_success = rcl_interfaces_srv_SetParameters_Request_deserialize_topic(ub, &set_parameter_request);
